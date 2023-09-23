@@ -1,4 +1,5 @@
 import { Elysia } from "elysia";
+import { maybeAuthed } from "../auth/middleware";
 import { BaseHtml } from "../components/base";
 import { ctx } from "../context";
 

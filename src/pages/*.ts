@@ -1,15 +1,11 @@
 import Elysia from "elysia";
-import { authGroup } from "./(auth)/*";
-import { organization } from "./<organizationId>/*";
-import { dashboard } from "./dashboard";
+import { protectedRoutes } from "./(protected)/*";
 import { db } from "./db";
 import { index } from "./index";
-import { newUser } from "./new-user";
+import { login } from "./login";
 
 export const pages = new Elysia()
   .use(index)
-  .use(authGroup)
+  .use(login)
   .use(db)
-  .use(dashboard)
-  .use(organization)
-  .use(newUser)
+  .use(protectedRoutes);

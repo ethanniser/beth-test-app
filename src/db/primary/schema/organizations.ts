@@ -1,7 +1,6 @@
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { createInsertSchema, createSelectSchema } from "drizzle-typebox";
 
-export const buisnesses = sqliteTable("buisnesses", {
+export const organizations = sqliteTable("organizations", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   name: text("name").notNull(),
   database_url: text("database_url").notNull(),
@@ -11,8 +10,4 @@ export const buisnesses = sqliteTable("buisnesses", {
     .$defaultFn(() => new Date()),
   updatedAt: integer("updatedAt", { mode: "timestamp" }),
 });
-export type Buisness = typeof buisnesses.$inferSelect;
-export type InsertBuisness = typeof buisnesses.$inferInsert;
-
-export const insertBuisnessSchema = createInsertSchema(buisnesses);
-export const selectBuisnessSchema = createSelectSchema(buisnesses);
+export type Organization = typeof organizations.$inferSelect;

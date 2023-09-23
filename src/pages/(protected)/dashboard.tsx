@@ -1,9 +1,10 @@
 import { Elysia } from "elysia";
 import { set } from "zod";
-import { BaseHtml } from "../components/base";
-import { DashBoard } from "../components/dashboard";
-import { ctx } from "../context";
-import { buisnesses } from "../db/primary/schema";
+import { authed } from "../../auth/middleware";
+import { BaseHtml } from "../../components/base";
+import { DashBoard } from "../../components/dashboard";
+import { ctx } from "../../context";
+import { organizations } from "../../db/primary/schema";
 
 export const dashboard = new Elysia()
   .use(ctx)
@@ -11,13 +12,16 @@ export const dashboard = new Elysia()
     const authRequest = ctx.auth.handleRequest(ctx);
     const session = await authRequest.validate();
 
-    if (!session) {
-      ctx.set.redirect = "/login";
-      ctx.set.headers["HX-Location"] = "/";
-      return;
-    }
+    if (!session) return;
 
     return { session };
+  })
+  .onBeforeHandle(({ session, set, log }) => {
+    if (!session) {
+      set.redirect = "/login";
+      set.headers["HX-Location"] = "/";
+      return "Please sign in.";
+    }
   })
   .get("/dashboard", async ({ html, session, db, set }) => {
     const buisnessId = session.user.buisnessId;
@@ -28,8 +32,8 @@ export const dashboard = new Elysia()
       return;
     }
 
-    const buisness = await db.query.buisnesses.findFirst({
-      where: (buisnesses, { eq }) => eq(buisnesses.id, buisnessId),
+    const buisness = await db.query.organizations.findFirst({
+      where: (organizations, { eq }) => eq(organizations.id, buisnessId),
     });
 
     if (!buisness) {

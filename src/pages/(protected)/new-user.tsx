@@ -1,6 +1,7 @@
 import { Elysia } from "elysia";
-import { BaseHtml } from "../components/base";
-import { ctx } from "../context";
+import { authed } from "../../auth/middleware";
+import { BaseHtml } from "../../components/base";
+import { ctx } from "../../context";
 
 export const newUser = new Elysia()
   .use(ctx)
@@ -8,13 +9,16 @@ export const newUser = new Elysia()
     const authRequest = ctx.auth.handleRequest(ctx);
     const session = await authRequest.validate();
 
-    if (!session) {
-      ctx.set.redirect = "/login";
-      ctx.set.headers["HX-Location"] = "/";
-      return;
-    }
+    if (!session) return;
 
     return { session };
+  })
+  .onBeforeHandle(({ session, set, log }) => {
+    if (!session) {
+      set.redirect = "/login";
+      set.headers["HX-Location"] = "/";
+      return "Please sign in.";
+    }
   })
   .get("/new-user", async ({ html, session }) => {
     return html(() => (

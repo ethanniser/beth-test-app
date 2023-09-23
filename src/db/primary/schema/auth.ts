@@ -1,6 +1,6 @@
 import { relations } from "drizzle-orm";
 import { blob, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { buisnesses } from ".";
+import { organizations } from "./organizations";
 
 export const user = sqliteTable("user", {
   // lucia mandatory
@@ -26,9 +26,9 @@ export const user = sqliteTable("user", {
 });
 
 export const userRelations = relations(user, ({ one }) => ({
-  buisness: one(buisnesses, {
+  organization: one(organizations, {
     fields: [user.buisnessId],
-    references: [buisnesses.id],
+    references: [organizations.id],
   }),
 }));
 

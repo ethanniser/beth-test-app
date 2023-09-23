@@ -80,10 +80,10 @@ export const authController = new Elysia({
           attributes: {},
         });
         const sessionCookie = auth.createSessionCookie(session);
-        // redirect to profile page
+        // redirect to new user page
         return new Response(null, {
           headers: {
-            Location: "/",
+            Location: "/new-user",
             "Set-Cookie": sessionCookie.serialize(), // store session cookie
           },
           status: 302,
