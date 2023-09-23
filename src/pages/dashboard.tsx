@@ -1,7 +1,9 @@
 import { Elysia } from "elysia";
+import { set } from "zod";
 import { BaseHtml } from "../components/base";
 import { DashBoard } from "../components/dashboard";
 import { ctx } from "../context";
+import { buisnesses } from "../db/primary/schema";
 
 export const dashboard = new Elysia()
   .use(ctx)
@@ -17,16 +19,45 @@ export const dashboard = new Elysia()
 
     return { session };
   })
-  .get("/dashboard", async ({ html, session, set }) => {
+  .get("/dashboard", async ({ html, session, db, set }) => {
+    const buisnessId = session.user.buisnessId;
+
+    if (!buisnessId) {
+      set.redirect = "/new-user";
+      set.headers["HX-Location"] = "/new-user";
+      return;
+    }
+
+    const buisness = await db.query.buisnesses.findFirst({
+      where: (buisnesses, { eq }) => eq(buisnesses.id, buisnessId),
+    });
+
+    if (!buisness) {
+      set.redirect = "/new-user";
+      set.headers["HX-Location"] = "/new-user";
+      return;
+    }
+
     return html(() => (
       <BaseHtml>
         <DashBoard>
-          <main class="flex-1 space-y-4 p-5">
-            <h2 class="text-5xl" safe>
-              Welcome, {session.user.name}
-            </h2>
-            <p class="text-xl">Here is the overview of your account:</p>
-            <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <main class="flex-1 space-y-4 py-5">
+            <div class="relative flex items-center justify-between px-6 py-3">
+              <div>
+                <h2 class="text-5xl" safe>
+                  Welcome, {session.user.name}
+                </h2>
+                <p class="text-xl">Here is the overview of your account:</p>
+              </div>
+
+              <div class="text-right text-xl" safe>
+                {buisness.name}
+              </div>
+
+              <div class="absolute inset-x-0 bottom-0 h-1 shadow-md"></div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-5 px-5 md:grid-cols-2 lg:grid-cols-3">
               <Card name="Unclosed Tickets" value="14" href="#" />
               <Card name="Tickets Closed Today" value="5" href="#" />
               <Card

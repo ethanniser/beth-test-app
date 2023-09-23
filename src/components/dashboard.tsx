@@ -3,9 +3,9 @@ import { PropsWithChildren } from "beth-stack/jsx";
 export function DashBoard({ children }: PropsWithChildren) {
   return (
     <div class="flex h-screen w-full flex-col md:flex-row">
-      <nav class="w-full bg-gray-800 p-5 text-white lg:w-64">
-        <h1 class="text-4xl">Dashboard</h1>
-        <ul class="space-y-6 pt-4">
+      <nav class="flex h-full w-full flex-col bg-gray-800 p-5 text-white lg:w-64">
+        <h1 class="mb-4 text-4xl">Dashboard</h1>
+        <ul class="flex-grow space-y-6">
           <DashBoardItem text="Home" logo="i-lucide-home" href="/dashboard" />
           <DashBoardItem
             text="Tickets"
@@ -26,8 +26,10 @@ export function DashBoard({ children }: PropsWithChildren) {
             text="Need Help?"
             logo="i-lucide-mail-question"
             href="https://twitter.com/ethanniser"
+            newTab
           />
         </ul>
+        <div class="text-2xl font-bold">BETH SAAS</div>
       </nav>
       {children}
     </div>
@@ -38,16 +40,19 @@ function DashBoardItem({
   text,
   logo,
   href,
+  newTab,
 }: {
   text: string;
   logo: string;
   href: string;
+  newTab?: boolean;
 }) {
   return (
     <li>
       <a
         class="flex items-center gap-3 py-2 text-2xl font-light hover:underline"
         href={href}
+        target={newTab ? "_blank" : ""}
       >
         <div class={logo} />
         <span>{text}</span>
