@@ -6,7 +6,7 @@ declare namespace Lucia {
     name: string;
     picture: string;
     role: "admin" | "user";
-    buisnessId?: number | null;
+    buisness_id?: number | null;
     createdAt: number;
     updatedAt?: Date | null;
   };

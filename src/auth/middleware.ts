@@ -1,5 +1,6 @@
 import Elysia from "elysia";
 import { ctx } from "../context";
+import { redirect } from "../lib";
 
 export const maybeAuthed = new Elysia({
   name: "@app/plugins/maybeAuthed",
@@ -26,8 +27,7 @@ export const authed = new Elysia({
   })
   .onBeforeHandle(({ session, set, log }) => {
     if (!session) {
-      set.redirect = "/login";
-      set.headers["HX-Location"] = "/";
+      redirect(set, "/login");
       return "Please sign in.";
     }
   });

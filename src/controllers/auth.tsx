@@ -5,6 +5,7 @@ import { parseCookie, serializeCookie } from "lucia/utils";
 import { googleAuth } from "../auth";
 import { config } from "../config";
 import { ctx } from "../context";
+import { redirect } from "../lib";
 
 export const authController = new Elysia({
   prefix: "/auth",
@@ -16,8 +17,7 @@ export const authController = new Elysia({
     const session = await authRequest.validate();
 
     if (!session) {
-      ctx.set.redirect = "/";
-      ctx.set.headers["HX-Location"] = "/";
+      redirect(ctx.set, "/");
       return;
     }
 
@@ -26,8 +26,7 @@ export const authController = new Elysia({
     const sessionCookie = ctx.auth.createSessionCookie(null);
 
     ctx.set.headers["Set-Cookie"] = sessionCookie.serialize();
-    ctx.set.redirect = "/";
-    ctx.set.headers["HX-Location"] = "/";
+    redirect(ctx.set, "/");
   })
   .get("/login/google", async ({ set }) => {
     const [url, state] = await googleAuth.getAuthorizationUrl();

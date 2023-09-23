@@ -2,6 +2,7 @@ import { Elysia } from "elysia";
 import { authed } from "../../auth/middleware";
 import { BaseHtml } from "../../components/base";
 import { ctx } from "../../context";
+import { redirect } from "../../lib";
 
 export const newUser = new Elysia()
   .use(ctx)
@@ -15,8 +16,7 @@ export const newUser = new Elysia()
   })
   .onBeforeHandle(({ session, set, log }) => {
     if (!session) {
-      set.redirect = "/login";
-      set.headers["HX-Location"] = "/";
+      redirect(set, "/");
       return "Please sign in.";
     }
   })
@@ -36,62 +36,76 @@ export const newUser = new Elysia()
             hx-post="/api/organization"
             hx-swap="innerHTML"
             hx-target-4xx="#errorMessage"
-            class=" w-96 rounded-lg bg-white p-8 shadow-md"
+            hx-target-5xx="#errorMessage"
+            class="w-96 rounded-lg bg-white p-8 shadow-md"
+            data-loading-states
           >
-            <div class="mb-4">
-              <label
-                for="orgName"
-                class=" block text-sm font-medium text-gray-600"
-              >
-                Organization Name
-              </label>
-              <input
-                type="text"
-                name="orgName"
-                id="orgName"
-                placeholder="Enter organization name"
-                class="w-full rounded-md border p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              />
-            </div>
+            <label
+              for="orgName"
+              class="block text-sm font-medium text-gray-600"
+            >
+              Organization Name (numbers and letters only)
+            </label>
+            <input
+              type="text"
+              name="orgName"
+              id="orgName"
+              placeholder="Enter organization name"
+              required="true"
+              pattern="^[a-zA-Z0-9]*$"
+              class="w-full rounded-md border p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            />
+
             <button
               type="submit"
-              class="w-full rounded-md bg-indigo-600 p-2 text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-50"
+              data-loading-disable
+              class="flex w-full items-center justify-center rounded-md bg-indigo-600 p-2 text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400"
             >
               Create Organization
+              <div
+                data-loading
+                class="i-lucide-loader-2 ml-2 animate-spin text-2xl"
+              />
             </button>
+            <div id="errorMessage" class="pt-4 text-red-500"></div>
           </form>
-          <div id="errorMessage" class="pt-4 text-red-500"></div>
 
           <form
             hx-post="/api/organization/join"
             hx-swap="innerHTML"
             hx-target-4xx="#errorMessageJoin"
+            hx-target-5xx="#errorMessageJoin"
             class="w-96 rounded-lg bg-white p-8 shadow-md"
+            data-loading-states
           >
-            <div class="mb-4">
-              <label
-                for="joinCode"
-                class=" block text-sm font-medium text-gray-600"
-              >
-                Join with Code (get from organization admin)
-              </label>
-              <input
-                type="text"
-                name="joinCode"
-                id="joinCode"
-                placeholder="Enter code"
-                class="w-full rounded-md border p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              />
-            </div>
+            <label
+              for="joinCode"
+              class="block text-sm font-medium text-gray-600"
+            >
+              Join with Code (get from organization admin)
+            </label>
+            <input
+              type="text"
+              name="joinCode"
+              id="joinCode"
+              placeholder="Enter code"
+              required="true"
+              pattern="^[a-zA-Z0-9]*$"
+              class="w-full rounded-md border p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            />
             <button
               type="submit"
-              class="w-full rounded-md bg-green-600 p-2 text-white hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50"
+              data-loading-disable
+              class="flex w-full items-center justify-center rounded-md bg-green-600 p-2 text-white hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-400"
             >
               Join Organization
+              <div
+                data-loading
+                class="i-lucide-loader-2 ml-2 animate-spin text-2xl"
+              />
             </button>
+            <div id="errorMessageJoin" class="pt-4 text-red-500"></div>
           </form>
-
-          <div id="errorMessageJoin" class="pt-4 text-red-500"></div>
         </div>
       </BaseHtml>
     ));

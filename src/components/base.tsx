@@ -14,6 +14,7 @@ export const BaseHtml = ({ children }: PropsWithChildren) => (
       <script src="https://unpkg.com/htmx.org@1.9.5"></script>
       <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
       <script src="https://unpkg.com/hyperscript.org@0.9.11"></script>
+      <script src="https://unpkg.com/htmx.org/dist/ext/loading-states.js"></script>
       <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/@unocss/reset/tailwind.min.css"
@@ -30,11 +31,14 @@ export const BaseHtml = ({ children }: PropsWithChildren) => (
         .htmx-request.htmx-indicator{
             opacity:1
         }
+        [data-loading] {
+          display: none;
+        }
       `}
       </style>
       <script>{safeScript}</script>
     </head>
-    <body hx-boost="true" class="font-inter">
+    <body hx-boost="true" class="font-inter" hx-ext="loading-states">
       {children}
     </body>
   </html>

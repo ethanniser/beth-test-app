@@ -5,6 +5,7 @@ import { BaseHtml } from "../../components/base";
 import { DashBoard } from "../../components/dashboard";
 import { ctx } from "../../context";
 import { organizations } from "../../db/primary/schema";
+import { redirect } from "../../lib";
 
 export const dashboard = new Elysia()
   .use(ctx)
@@ -18,27 +19,26 @@ export const dashboard = new Elysia()
   })
   .onBeforeHandle(({ session, set, log }) => {
     if (!session) {
-      set.redirect = "/login";
-      set.headers["HX-Location"] = "/";
+      redirect(set, "/login");
       return "Please sign in.";
     }
   })
   .get("/dashboard", async ({ html, session, db, set }) => {
-    const buisnessId = session.user.buisnessId;
+    const buisness_id = session.user.buisness_id;
 
-    if (!buisnessId) {
-      set.redirect = "/new-user";
-      set.headers["HX-Location"] = "/new-user";
+    console.log(buisness_id);
+
+    if (!buisness_id) {
+      redirect(set, "/new-user");
       return;
     }
 
     const buisness = await db.query.organizations.findFirst({
-      where: (organizations, { eq }) => eq(organizations.id, buisnessId),
+      where: (organizations, { eq }) => eq(organizations.id, buisness_id),
     });
 
     if (!buisness) {
-      set.redirect = "/new-user";
-      set.headers["HX-Location"] = "/new-user";
+      redirect(set, "/new-user");
       return;
     }
 

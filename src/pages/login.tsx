@@ -2,6 +2,7 @@ import Elysia from "elysia";
 import { maybeAuthed } from "../auth/middleware";
 import { BaseHtml } from "../components/base";
 import { ctx } from "../context";
+import { redirect } from "../lib";
 
 export const login = new Elysia()
   .use(ctx)
@@ -13,8 +14,7 @@ export const login = new Elysia()
   })
   .get("/login", async ({ session, set, html }) => {
     if (session) {
-      set.redirect = "/";
-      set.headers["HX-Location"] = "/";
+      redirect(set, "/");
       return;
     }
 
@@ -38,16 +38,17 @@ export const login = new Elysia()
             hx-target-4xx="#errorMessage"
             class="w-96 rounded-lg bg-white p-8 shadow-md"
           >
-            <div>
+            <div class="flex items-center justify-center rounded-lg bg-gray-800 p-2 transition duration-200 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50">
               <a
                 hx-boost="false"
                 href="/api/auth/login/google"
-                class="display-block rounded-lg bg-gray-800 p-2 text-center text-white transition duration-200 hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50"
+                class="text-center text-white"
               >
                 Sign In with Google
-                <div class="i-logos-google-icon inline-block text-2xl" />
               </a>
+              <div class="i-logos-google-icon ml-2 inline-block text-2xl" />
             </div>
+
             <div id="errorMessage" class="pt-4 text-red-500"></div>
           </form>
         </div>

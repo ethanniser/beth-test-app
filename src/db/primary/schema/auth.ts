@@ -17,7 +17,7 @@ export const user = sqliteTable("user", {
   picture: text("picture").notNull(),
 
   // relations
-  buisnessId: integer("buisness_id", { mode: "number" }),
+  buisness_id: integer("buisness_id", { mode: "number" }),
 
   createdAt: integer("createdAt", { mode: "timestamp" })
     .notNull()
@@ -27,7 +27,7 @@ export const user = sqliteTable("user", {
 
 export const userRelations = relations(user, ({ one }) => ({
   organization: one(organizations, {
-    fields: [user.buisnessId],
+    fields: [user.buisness_id],
     references: [organizations.id],
   }),
 }));

@@ -56,10 +56,9 @@ export async function pushToTenantDb({
     "push:sqlite",
     // "--driver=turso",
     // "--tablesFilter=!libsql_wasm_func_table",
-    // `--schema=${schemaPath}`,
-    // `--url=${url}`,
+    // "--schema=./src/db/tenant/schema/index.ts",
+    // `--url=libsql://${dbName}-ethanniser.turso.io`,
     // `--authToken=${authToken}`,
-    `--config=${configPath}`,
   ];
 
   await Bun.write(

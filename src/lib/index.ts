@@ -1,9 +1,23 @@
-import { createId, init } from "@paralleldrive/cuid2";
+import { init } from "@paralleldrive/cuid2";
 
-init({
+const createId = init({
   length: 7,
 });
 
 export function createBuisnessCode() {
   return createId();
+}
+
+export function createDbId() {
+  return createId();
+}
+
+type ElysiaSet = {
+  headers: Record<string, string>;
+  redirect?: string;
+};
+
+export function redirect(set: ElysiaSet, url: string) {
+  set.headers["HX-Location"] = url;
+  set.redirect = url;
 }

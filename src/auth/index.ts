@@ -54,7 +54,7 @@ export const auth = lucia({
       picture: data.picture,
       id: data.id,
       role: data.role,
-      buisnessId: data.buisnessId,
+      buisness_id: data.buisness_id,
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,
     };
