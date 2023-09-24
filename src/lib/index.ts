@@ -13,8 +13,17 @@ type ElysiaSet = {
   redirect?: string;
 };
 
-export function redirect(set: ElysiaSet, url: string) {
-  if (set.headers["HX-Request"] === "true") {
+export function redirect(
+  {
+    set,
+    headers,
+  }: {
+    set: ElysiaSet;
+    headers: Record<string, string | null>;
+  },
+  url: string,
+) {
+  if (headers["hx-request"] === "true") {
     set.headers["HX-Location"] = url;
   } else {
     set.redirect = url;

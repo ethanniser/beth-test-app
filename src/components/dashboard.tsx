@@ -9,7 +9,7 @@ export function DashBoard({
 }>) {
   return (
     <div class="flex h-screen w-full flex-col md:flex-row">
-      <nav class="flex h-full w-full flex-col bg-gray-800 p-5 text-white lg:w-64">
+      <nav class="flex h-full min-w-[18rem] flex-col bg-gray-800 p-5 text-white lg:w-64">
         <h1 class="mb-4 text-4xl">Dashboard</h1>
         <ul class="flex-grow space-y-6">
           <DashBoardItem text="Home" logo="i-lucide-home" href="/dashboard" />

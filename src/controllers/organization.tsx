@@ -11,9 +11,15 @@ export const organization = new Elysia({
   .use(ctx)
   .post(
     "/",
-    async ({ session, set, body, db, turso }) => {
+    async ({ session, set, body, db, turso, headers }) => {
       if (!session) {
-        redirect(set, "/login");
+        redirect(
+          {
+            set,
+            headers,
+          },
+          "/login",
+        );
         return "Please sign in.";
       }
       const dbName = "org-" + createDbId();
@@ -59,7 +65,13 @@ export const organization = new Elysia({
         })
         .where(eq(user.id, session.user.id));
 
-      redirect(set, "/dashboard");
+      redirect(
+        {
+          set,
+          headers,
+        },
+        "/dashboard",
+      );
     },
     {
       body: t.Object({
@@ -72,9 +84,15 @@ export const organization = new Elysia({
   )
   .post(
     "/join",
-    async ({ session, set, body, db }) => {
+    async ({ session, set, body, db, headers }) => {
       if (!session) {
-        redirect(set, "/login");
+        redirect(
+          {
+            set,
+            headers,
+          },
+          "/login",
+        );
         return "Please sign in.";
       }
 
@@ -97,7 +115,13 @@ export const organization = new Elysia({
         })
         .where(eq(user.id, session.user.id));
 
-      redirect(set, "/dashboard");
+      redirect(
+        {
+          set,
+          headers,
+        },
+        "/dashboard",
+      );
     },
     {
       body: t.Object({

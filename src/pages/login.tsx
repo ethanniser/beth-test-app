@@ -6,9 +6,15 @@ import { redirect } from "../lib";
 
 export const login = new Elysia()
   .use(ctx)
-  .get("/login", async ({ session, set, html }) => {
+  .get("/login", async ({ session, set, html, headers }) => {
     if (session) {
-      redirect(set, "/");
+      redirect(
+        {
+          set,
+          headers,
+        },
+        "/",
+      );
       return;
     }
 

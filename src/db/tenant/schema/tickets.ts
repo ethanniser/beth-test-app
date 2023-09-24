@@ -8,15 +8,16 @@ export const tickets = sqliteTable(
   {
     id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
     // * References employee user id from primary database
-    assigned_employee_user_id: text("assigned_employee_user_id").notNull(),
+    assigned_employee_user_id: text("assigned_employee_user_id"),
     subject: text("subject").notNull(),
     description: text("description").notNull(),
     status: text("status", { enum: ["open", "closed"] })
       .notNull()
       .default("open"),
-    createdAt: integer("createdAt", { mode: "timestamp" })
+    created_at: integer("created_at", { mode: "timestamp" })
       .notNull()
       .$defaultFn(() => new Date()),
+    closed_at: integer("closed_at", { mode: "timestamp" }),
     updatedAt: integer("updatedAt", { mode: "timestamp" }),
   },
   (table) => {

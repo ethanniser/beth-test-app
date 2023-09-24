@@ -66,5 +66,5 @@ export type Auth = typeof auth;
 export const googleAuth = google(auth, {
   clientId: config.env.GOOGLE_CLIENT_ID,
   clientSecret: config.env.GOOGLE_CLIENT_SECRET,
-  redirectUri: "http://localhost:3000/api/auth/login/google/callback",
+  redirectUri: `${config.env.HOST_URL}/api/auth/login/google/callback`,
 });

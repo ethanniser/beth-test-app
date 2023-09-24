@@ -44,9 +44,11 @@ const getConfigText = ({
 export async function pushToTenantDb({
   dbName,
   authToken,
+  input,
 }: {
   dbName: string;
   authToken: string;
+  input?: boolean;
 }) {
   const configPath = "./src/db/tenant/temp-drizzle.config.ts";
 
@@ -59,6 +61,7 @@ export async function pushToTenantDb({
     // "--schema=./src/db/tenant/schema/index.ts",
     // `--url=libsql://${dbName}-ethanniser.turso.io`,
     // `--authToken=${authToken}`,
+    `--config=${configPath}`,
   ];
 
   await Bun.write(
@@ -70,7 +73,8 @@ export async function pushToTenantDb({
   );
 
   return new Promise<void>((resolve, reject) => {
-    Bun.spawn(command, {
+    const proc = Bun.spawn(command, {
+      stdin: input ? "inherit" : undefined,
       onExit(subprocess, exitCode, signalCode, error) {
         if (error || exitCode !== 0) {
           console.error(error);
@@ -85,5 +89,15 @@ export async function pushToTenantDb({
         resolve();
       },
     });
+
+    const reader = proc.stdout.getReader();
+
+    (async function readStream() {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        process.stdout.write(Buffer.from(value));
+      }
+    })();
   });
 }

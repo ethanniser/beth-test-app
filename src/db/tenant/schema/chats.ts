@@ -19,6 +19,7 @@ export const chats = sqliteTable(
   (table) => {
     return {
       ticket_id_idx: index("ticket_id_idx").on(table.ticket_id),
+      timestamp_idx: index("timestamp_idx").on(table.timestamp),
     };
   },
 );

@@ -1,19 +1,31 @@
 import { Elysia } from "elysia";
-import { authed } from "../../auth/middleware";
-import { BaseHtml } from "../../components/base";
-import { ctx } from "../../context";
-import { redirect } from "../../lib";
+import { authed } from "../auth/middleware";
+import { BaseHtml } from "../components/base";
+import { ctx } from "../context";
+import { redirect } from "../lib";
 
 export const newUser = new Elysia()
   .use(ctx)
-  .get("/new-user", async ({ html, session, set }) => {
+  .get("/new-user", async ({ html, session, set, headers }) => {
     if (!session) {
-      redirect(set, "/");
+      redirect(
+        {
+          set,
+          headers,
+        },
+        "/",
+      );
       return "Please sign in.";
     }
 
     if (session.user.buisness_id) {
-      redirect(set, "/dashboard");
+      redirect(
+        {
+          set,
+          headers,
+        },
+        "/dashboard",
+      );
       return "redirecting...";
     }
 
@@ -48,7 +60,7 @@ export const newUser = new Elysia()
               id="orgName"
               placeholder="Enter organization name"
               required="true"
-              pattern="^org-[a-z0-9]{7}$"
+              pattern="^[-a-zA-Z0-9]*$"
               class="w-full rounded-md border p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
 
@@ -86,7 +98,7 @@ export const newUser = new Elysia()
               id="joinCode"
               placeholder="Enter code"
               required="true"
-              pattern="^[-a-zA-Z0-9]*$"
+              pattern="^org-[a-z0-9]{7}$"
               class="w-full rounded-md border p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
             <button

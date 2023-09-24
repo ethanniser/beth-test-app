@@ -25,9 +25,15 @@ export const authed = new Elysia({
 
     return { session };
   })
-  .onBeforeHandle(({ session, set, log }) => {
+  .onBeforeHandle(({ session, set, headers }) => {
     if (!session) {
-      redirect(set, "/login");
+      redirect(
+        {
+          set,
+          headers,
+        },
+        "/login",
+      );
       return "Please sign in.";
     }
   });
