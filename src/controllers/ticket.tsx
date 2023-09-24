@@ -9,11 +9,6 @@ export const ticketController = new Elysia({
   prefix: "/ticket",
 })
   .use(ctx)
-  .get("/", ({ set, headers }) => {
-    console.log(set.headers["Host"] ?? "No HX-Request header");
-    set.headers["FOO"] = "BAR";
-    return "Hello World";
-  })
   .post(
     "/",
     async ({ db, body, set, headers }) => {

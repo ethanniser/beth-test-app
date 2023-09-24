@@ -42,9 +42,7 @@ export const ctx = new Elysia({
   .use(logger(loggerConfig))
   .use(
     // @ts-expect-error
-    config.env.NODE_ENV === "development"
-      ? new HoltLogger().getLogger()
-      : (a) => a,
+    new HoltLogger().getLogger(),
   )
   .use(
     // @ts-expect-error

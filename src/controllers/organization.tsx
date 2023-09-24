@@ -103,8 +103,6 @@ export const organization = new Elysia({
           eq(organizations.database_name, body.joinCode),
       });
 
-      console.log(buisness);
-
       if (!buisness) {
         set.status = "Not Found";
         return "Organization not found";

@@ -12,7 +12,6 @@ export const chatController = new Elysia({
   .post(
     "/",
     async ({ db, body, set, headers, session }) => {
-      console.log(body);
       const { organizationId, message, ticketId } = body;
 
       const organization = await db.query.organizations.findFirst({
@@ -24,17 +23,6 @@ export const chatController = new Elysia({
         return "Organization not found";
       }
 
-      console.log({
-        session,
-        organizationId: {
-          organizationId,
-          type: typeof organizationId,
-        },
-        buisness_id: {
-          buisness_id: session?.user.buisness_id,
-          type: typeof session?.user.buisness_id,
-        },
-      });
       if (session && session.user.buisness_id !== organizationId) {
         set.status = "Forbidden";
         redirect(

@@ -63,12 +63,6 @@ export const authController = new Elysia({
       const cookies = parseCookie(request.headers.get("Cookie") ?? "");
       const storedState = cookies.google_oauth_state;
 
-      console.log({
-        code,
-        state,
-        storedState,
-      });
-
       if (!storedState || !state || storedState !== state || !code) {
         set.status = 400;
         return "Invalid state";
