@@ -30,6 +30,12 @@ export const ctx = new Elysia({
   .decorate("config", config)
   .decorate("auth", auth)
   .decorate("turso", turso)
+  .derive(async (ctx) => {
+    const authRequest = ctx.auth.handleRequest(ctx);
+    const session = await authRequest.validate();
+
+    return { session };
+  })
   .use(bethStack())
   .use(logger(loggerConfig))
   .use(

@@ -6,21 +6,17 @@ import { redirect } from "../../lib";
 
 export const newUser = new Elysia()
   .use(ctx)
-  .derive(async (ctx) => {
-    const authRequest = ctx.auth.handleRequest(ctx);
-    const session = await authRequest.validate();
-
-    if (!session) return;
-
-    return { session };
-  })
-  .onBeforeHandle(({ session, set, log }) => {
+  .get("/new-user", async ({ html, session, set }) => {
     if (!session) {
       redirect(set, "/");
       return "Please sign in.";
     }
-  })
-  .get("/new-user", async ({ html, session }) => {
+
+    if (session.user.buisness_id) {
+      redirect(set, "/dashboard");
+      return "redirecting...";
+    }
+
     return html(() => (
       <BaseHtml>
         <div
@@ -52,7 +48,7 @@ export const newUser = new Elysia()
               id="orgName"
               placeholder="Enter organization name"
               required="true"
-              pattern="^[a-zA-Z0-9]*$"
+              pattern="^org-[a-z0-9]{7}$"
               class="w-full rounded-md border p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
 
@@ -90,7 +86,7 @@ export const newUser = new Elysia()
               id="joinCode"
               placeholder="Enter code"
               required="true"
-              pattern="^[a-zA-Z0-9]*$"
+              pattern="^[-a-zA-Z0-9]*$"
               class="w-full rounded-md border p-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-400"
             />
             <button

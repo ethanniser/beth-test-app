@@ -12,6 +12,7 @@ export const BaseHtml = ({ children }: PropsWithChildren) => (
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <title>THE BETH STACK</title>
       <script src="https://unpkg.com/htmx.org@1.9.5"></script>
+      <script>htmx.config.globalViewTransitions = true;</script>
       <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
       <script src="https://unpkg.com/hyperscript.org@0.9.11"></script>
       <script src="https://unpkg.com/htmx.org/dist/ext/loading-states.js"></script>
@@ -36,6 +37,14 @@ export const BaseHtml = ({ children }: PropsWithChildren) => (
         }
       `}
       </style>
+      <script type="text/hyperscript">
+        {`
+          def copyCodeToClipboard(selector)
+            get the innerHTML of selector
+            call navigator.clipboard.writeText(the result)
+          end
+        `}
+      </script>
       <script>{safeScript}</script>
     </head>
     <body hx-boost="true" class="font-inter" hx-ext="loading-states">

@@ -9,23 +9,13 @@ export const organization = new Elysia({
   prefix: "/organization",
 })
   .use(ctx)
-  .derive(async (ctx) => {
-    const authRequest = ctx.auth.handleRequest(ctx);
-    const session = await authRequest.validate();
-
-    if (!session) return;
-
-    return { session };
-  })
-  .onBeforeHandle(({ session, set, log }) => {
-    if (!session) {
-      redirect(set, "/login");
-      return "Please sign in.";
-    }
-  })
   .post(
     "/",
     async ({ session, set, body, db, turso }) => {
+      if (!session) {
+        redirect(set, "/login");
+        return "Please sign in.";
+      }
       const dbName = "org-" + createDbId();
 
       const {
@@ -65,6 +55,7 @@ export const organization = new Elysia({
         .update(user)
         .set({
           buisness_id: result.id,
+          role: "admin",
         })
         .where(eq(user.id, session.user.id));
 
@@ -81,17 +72,32 @@ export const organization = new Elysia({
   )
   .post(
     "/join",
-    async ({ session, set, body }) => {
+    async ({ session, set, body, db }) => {
       if (!session) {
-        set.status = "Unauthorized";
         redirect(set, "/login");
         return "Please sign in.";
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const buisness = await db.query.organizations.findFirst({
+        where: (organizations, { eq }) =>
+          eq(organizations.database_name, body.joinCode),
+      });
 
-      set.status = "Internal Server Error";
-      return "Something went wrong";
+      console.log(buisness);
+
+      if (!buisness) {
+        set.status = "Not Found";
+        return "Organization not found";
+      }
+
+      await db
+        .update(user)
+        .set({
+          buisness_id: buisness.id,
+        })
+        .where(eq(user.id, session.user.id));
+
+      redirect(set, "/dashboard");
     },
     {
       body: t.Object({

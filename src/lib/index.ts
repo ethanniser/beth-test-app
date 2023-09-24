@@ -4,10 +4,6 @@ const createId = init({
   length: 7,
 });
 
-export function createBuisnessCode() {
-  return createId();
-}
-
 export function createDbId() {
   return createId();
 }
@@ -18,6 +14,9 @@ type ElysiaSet = {
 };
 
 export function redirect(set: ElysiaSet, url: string) {
-  set.headers["HX-Location"] = url;
-  set.redirect = url;
+  if (set.headers["HX-Request"] === "true") {
+    set.headers["HX-Location"] = url;
+  } else {
+    set.redirect = url;
+  }
 }

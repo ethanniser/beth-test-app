@@ -9,21 +9,12 @@ import { redirect } from "../../lib";
 
 export const dashboard = new Elysia()
   .use(ctx)
-  .derive(async (ctx) => {
-    const authRequest = ctx.auth.handleRequest(ctx);
-    const session = await authRequest.validate();
-
-    if (!session) return;
-
-    return { session };
-  })
-  .onBeforeHandle(({ session, set, log }) => {
+  .get("/dashboard", async ({ html, session, db, set }) => {
     if (!session) {
       redirect(set, "/login");
       return "Please sign in.";
     }
-  })
-  .get("/dashboard", async ({ html, session, db, set }) => {
+
     const buisness_id = session.user.buisness_id;
 
     console.log(buisness_id);
@@ -42,9 +33,11 @@ export const dashboard = new Elysia()
       return;
     }
 
+    console.log("role", session.user.userId);
+
     return html(() => (
       <BaseHtml>
-        <DashBoard>
+        <DashBoard session={session}>
           <main class="flex-1 space-y-4 py-5">
             <div class="relative flex items-center justify-between px-6 py-3">
               <div>
@@ -54,7 +47,7 @@ export const dashboard = new Elysia()
                 <p class="text-xl">Here is the overview of your account:</p>
               </div>
 
-              <div class="text-right text-xl" safe>
+              <div class="pr-10 text-right text-5xl" safe>
                 {buisness.name}
               </div>
 
