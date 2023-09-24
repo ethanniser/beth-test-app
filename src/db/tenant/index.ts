@@ -75,6 +75,7 @@ export async function pushToTenantDb({
   return new Promise<void>((resolve, reject) => {
     const proc = Bun.spawn(command, {
       stdin: input ? "inherit" : undefined,
+      stdout: input ? "inherit" : undefined,
       onExit(subprocess, exitCode, signalCode, error) {
         if (error || exitCode !== 0) {
           console.error(error);
@@ -89,15 +90,5 @@ export async function pushToTenantDb({
         resolve();
       },
     });
-
-    const reader = proc.stdout.getReader();
-
-    (async function readStream() {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        process.stdout.write(Buffer.from(value));
-      }
-    })();
   });
 }
