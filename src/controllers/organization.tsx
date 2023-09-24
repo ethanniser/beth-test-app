@@ -3,7 +3,7 @@ import Elysia, { t } from "elysia";
 import { ctx } from "../context";
 import { organizations, user } from "../db/primary/schema";
 import { getTenantDb, pushToTenantDb } from "../db/tenant";
-import { createDbId, redirect } from "../lib";
+import { createDbId, redirect, syncIfLocal } from "../lib";
 
 export const organization = new Elysia({
   prefix: "/organization",
@@ -65,6 +65,8 @@ export const organization = new Elysia({
         })
         .where(eq(user.id, session.user.id));
 
+      await syncIfLocal();
+
       redirect(
         {
           set,
@@ -114,6 +116,8 @@ export const organization = new Elysia({
           buisness_id: buisness.id,
         })
         .where(eq(user.id, session.user.id));
+
+      await syncIfLocal();
 
       redirect(
         {

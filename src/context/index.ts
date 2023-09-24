@@ -31,8 +31,10 @@ export const ctx = new Elysia({
   .decorate("auth", auth)
   .decorate("turso", turso)
   .derive(async (ctx) => {
+    const now = performance.now();
     const authRequest = ctx.auth.handleRequest(ctx);
     const session = await authRequest.validate();
+    console.log(`Auth request handled in ${performance.now() - now}ms`);
 
     return { session };
   })

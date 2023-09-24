@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import Elysia from "elysia";
 import { FancyLink } from "../components";
 import { BaseHtml } from "../components/base";
@@ -55,7 +56,7 @@ export const tickets = new Elysia()
     });
 
     const tickets = await tenantDb.query.tickets.findMany({
-      orderBy: (tickets, { asc }) => asc(tickets.created_at),
+      orderBy: (tickets, { desc }) => desc(tickets.created_at),
     });
 
     return html(() => (
@@ -115,7 +116,9 @@ function TicketCard({
       <p class="text-base text-gray-500">{ticket.description}</p>
       <p class="text-sm text-gray-400">
         Last updated:{" "}
-        {ticket.updatedAt ? ticket.updatedAt.toDateString() : "Not yet updated"}
+        {ticket.updatedAt
+          ? format(ticket.updatedAt, "hh:mm aa, MMM dd")
+          : "Never"}
       </p>
       <FancyLink href={`/${organizationId}/ticket/${ticket.id}`} text="Open" />
     </div>

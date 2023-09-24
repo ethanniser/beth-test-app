@@ -51,23 +51,26 @@ export const chatController = new Elysia({
         authToken: organization.database_auth_token,
       });
 
-      const [chat] = await tenantDb
-        .insert(chats)
-        .values({
-          message,
-          ticket_id: ticketId,
-          sender: session ? "employee" : "customer",
-        })
-        .returning();
+      const [chatResult] = await tenantDb.batch([
+        tenantDb
+          .insert(chats)
+          .values({
+            message,
+            ticket_id: ticketId,
+            sender: session ? "employee" : "customer",
+          })
+          .returning(),
+        tenantDb.update(tickets).set({
+          updatedAt: new Date(),
+        }),
+      ]);
+
+      const chat = chatResult[0];
 
       if (!chat) {
         set.status = "Internal Server Error";
         return "Failed to send message";
       }
-
-      await tenantDb.update(tickets).set({
-        updatedAt: new Date(),
-      });
 
       return <ChatBubble chat={chat} />;
     },

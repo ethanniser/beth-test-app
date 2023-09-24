@@ -1,4 +1,6 @@
 import { init } from "@paralleldrive/cuid2";
+import { config } from "../config";
+import { client } from "../db/primary";
 
 const createId = init({
   length: 7,
@@ -27,5 +29,11 @@ export function redirect(
     set.headers["HX-Location"] = url;
   } else {
     set.redirect = url;
+  }
+}
+
+export async function syncIfLocal() {
+  if (config.env.DATABASE_CONNECTION_TYPE === "local-replica") {
+    await client.sync();
   }
 }

@@ -5,7 +5,8 @@ import { parseCookie, serializeCookie } from "lucia/utils";
 import { googleAuth } from "../auth";
 import { config } from "../config";
 import { ctx } from "../context";
-import { redirect } from "../lib";
+import { client } from "../db/primary";
+import { redirect, syncIfLocal } from "../lib";
 
 export const authController = new Elysia({
   prefix: "/auth",
@@ -28,6 +29,8 @@ export const authController = new Elysia({
 
     await ctx.auth.invalidateSession(session.sessionId);
 
+    await syncIfLocal();
+
     const sessionCookie = ctx.auth.createSessionCookie(null);
 
     ctx.set.headers["Set-Cookie"] = sessionCookie.serialize();
@@ -42,7 +45,7 @@ export const authController = new Elysia({
   .get("/login/google", async ({ set }) => {
     const [url, state] = await googleAuth.getAuthorizationUrl();
 
-    const stateCookie = serializeCookie("github_oauth_state", state, {
+    const stateCookie = serializeCookie("google_oauth_state", state, {
       maxAge: 60 * 60,
       secure: config.env.NODE_ENV === "production",
       httpOnly: true,
@@ -58,7 +61,13 @@ export const authController = new Elysia({
       const { code, state } = query;
 
       const cookies = parseCookie(request.headers.get("Cookie") ?? "");
-      const storedState = cookies.github_oauth_state;
+      const storedState = cookies.google_oauth_state;
+
+      console.log({
+        code,
+        state,
+        storedState,
+      });
 
       if (!storedState || !state || storedState !== state || !code) {
         set.status = 400;
@@ -90,6 +99,9 @@ export const authController = new Elysia({
           attributes: {},
         });
         const sessionCookie = auth.createSessionCookie(session);
+
+        await syncIfLocal();
+
         // redirect to new user page
         return new Response(null, {
           headers: {

@@ -54,7 +54,7 @@ export const slashNew = new Elysia().use(ctx).get(
               minlength="3"
               maxlength="50"
               pattern="^[-a-zA-Z0-9]*$"
-              class="mb-8 w-full rounded-md border p-4 text-xl focus:border-transparent focus:bg-gray-500 focus:outline-none focus:ring-4"
+              class="mb-8 w-full rounded-md border p-4 text-xl focus:border-gray-700 focus:outline-none focus:ring-4"
             />
             <label
               for="description"
@@ -70,8 +70,8 @@ export const slashNew = new Elysia().use(ctx).get(
               minlength="10"
               maxlength="500"
               rows="4"
-              class="w-full rounded-md border p-4 text-xl focus:border-transparent focus:bg-gray-500 focus:outline-none focus:ring-4"
-            />
+              class="w-full rounded-md border p-4 text-xl focus:border-gray-700 focus:outline-none focus:ring-4"
+            ></textarea>
             <div class="py-4" />
             <button
               type="submit"
